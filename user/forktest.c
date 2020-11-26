@@ -8,49 +8,46 @@
 #define N  1000
 
 void
-print(const char *s)
-{
-  write(1, s, strlen(s));
+print(const char *s) {
+    write(1, s, strlen(s));
 }
 
 void
-forktest(void)
-{
-  int n, pid;
+forktest(void) {
+    int n, pid;
 
-  print("fork test\n");
+    print("fork test\n");
 
-  for(n=0; n<N; n++){
-    pid = fork();
-    if(pid < 0)
-      break;
-    if(pid == 0)
-      exit();
-  }
-
-  if(n == N){
-    print("fork claimed to work N times!\n");
-    exit();
-  }
-
-  for(; n > 0; n--){
-    if(wait() < 0){
-      print("wait stopped early\n");
-      exit();
+    for(n=0; n<N; n++) {
+        pid = fork();
+        if(pid < 0)
+            break;
+        if(pid == 0)
+            exit();
     }
-  }
 
-  if(wait() != -1){
-    print("wait got too many\n");
-    exit();
-  }
+    if(n == N) {
+        print("fork claimed to work N times!\n");
+        exit();
+    }
 
-  print("fork test OK\n");
+    for(; n > 0; n--) {
+        if(wait() < 0) {
+            print("wait stopped early\n");
+            exit();
+        }
+    }
+
+    if(wait() != -1) {
+        print("wait got too many\n");
+        exit();
+    }
+
+    print("fork test OK\n");
 }
 
 int
-main(void)
-{
-  forktest();
-  exit();
+main(void) {
+    forktest();
+    exit();
 }

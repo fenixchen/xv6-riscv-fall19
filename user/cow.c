@@ -10,40 +10,39 @@
 // then fork. this will fail in the default
 // kernel, which does not support copy-on-write.
 void
-simpletest()
-{
-  uint64 phys_size = PHYSTOP - KERNBASE;
-  int sz = (phys_size / 3) * 2;
+simpletest() {
+    uint64 phys_size = PHYSTOP - KERNBASE;
+    int sz = (phys_size / 3) * 2;
 
-  printf("simple: ");
-  
-  char *p = sbrk(sz);
-  if(p == (char*)0xffffffffffffffffL){
-    printf("sbrk(%d) failed\n", sz);
-    exit();
-  }
+    printf("simple: ");
 
-  for(char *q = p; q < p + sz; q += 4096){
-    *(int*)q = getpid();
-  }
+    char *p = sbrk(sz);
+    if(p == (char*)0xffffffffffffffffL) {
+        printf("sbrk(%d) failed\n", sz);
+        exit();
+    }
 
-  int pid = fork();
-  if(pid < 0){
-    printf("fork() failed\n");
-    exit();
-  }
+    for(char *q = p; q < p + sz; q += 4096) {
+        *(int*)q = getpid();
+    }
 
-  if(pid == 0)
-    exit();
+    int pid = fork();
+    if(pid < 0) {
+        printf("fork() failed\n");
+        exit();
+    }
 
-  wait();
+    if(pid == 0)
+        exit();
 
-  if(sbrk(-sz) == (char*)0xffffffffffffffffL){
-    printf("sbrk(-%d) failed\n", sz);
-    exit();
-  }
+    wait();
 
-  printf("ok\n");
+    if(sbrk(-sz) == (char*)0xffffffffffffffffL) {
+        printf("sbrk(-%d) failed\n", sz);
+        exit();
+    }
+
+    printf("ok\n");
 }
 
 // three processes all write COW memory.
@@ -51,70 +50,69 @@ simpletest()
 // to be allocated, so it also checks whether
 // copied pages are freed.
 void
-threetest()
-{
-  uint64 phys_size = PHYSTOP - KERNBASE;
-  int sz = phys_size / 4;
-  int pid1, pid2;
+threetest() {
+    uint64 phys_size = PHYSTOP - KERNBASE;
+    int sz = phys_size / 4;
+    int pid1, pid2;
 
-  printf("three: ");
-  
-  char *p = sbrk(sz);
-  if(p == (char*)0xffffffffffffffffL){
-    printf("sbrk(%d) failed\n", sz);
-    exit();
-  }
+    printf("three: ");
 
-  pid1 = fork();
-  if(pid1 < 0){
-    printf("fork failed\n");
-    exit();
-  }
-  if(pid1 == 0){
-    pid2 = fork();
-    if(pid2 < 0){
-      printf("fork failed");
-      exit();
+    char *p = sbrk(sz);
+    if(p == (char*)0xffffffffffffffffL) {
+        printf("sbrk(%d) failed\n", sz);
+        exit();
     }
-    if(pid2 == 0){
-      for(char *q = p; q < p + (sz/5)*4; q += 4096){
-        *(int*)q = getpid();
-      }
-      for(char *q = p; q < p + (sz/5)*4; q += 4096){
-        if(*(int*)q != getpid()){
-          printf("wrong content\n");
-          exit();
+
+    pid1 = fork();
+    if(pid1 < 0) {
+        printf("fork failed\n");
+        exit();
+    }
+    if(pid1 == 0) {
+        pid2 = fork();
+        if(pid2 < 0) {
+            printf("fork failed");
+            exit();
         }
-      }
-      exit();
+        if(pid2 == 0) {
+            for(char *q = p; q < p + (sz/5)*4; q += 4096) {
+                *(int*)q = getpid();
+            }
+            for(char *q = p; q < p + (sz/5)*4; q += 4096) {
+                if(*(int*)q != getpid()) {
+                    printf("wrong content\n");
+                    exit();
+                }
+            }
+            exit();
+        }
+        for(char *q = p; q < p + (sz/2); q += 4096) {
+            *(int*)q = 9999;
+        }
+        exit();
     }
-    for(char *q = p; q < p + (sz/2); q += 4096){
-      *(int*)q = 9999;
+
+    for(char *q = p; q < p + sz; q += 4096) {
+        *(int*)q = getpid();
     }
-    exit();
-  }
 
-  for(char *q = p; q < p + sz; q += 4096){
-    *(int*)q = getpid();
-  }
+    wait();
 
-  wait();
+    sleep(1);
 
-  sleep(1);
-
-  for(char *q = p; q < p + sz; q += 4096){
-    if(*(int*)q != getpid()){
-      printf("wrong content\n");
-      exit();
+    for(char *q = p; q < p + sz; q += 4096) {
+        if(*(int*)q != getpid()) {
+            printf("wrong content\n");
+            exit();
+        }
     }
-  }
 
-  if(sbrk(-sz) == (char*)0xffffffffffffffffL){
-    printf("sbrk(-%d) failed\n", sz);
-    exit();
-  }
+    if(sbrk(-sz) == (char*)0xffffffffffffffffL) {
+        printf("sbrk(-%d) failed\n", sz);
+        exit();
+    }
 
-  printf("ok\n");
+    printf("ok\n");
 }
 
 char junk1[4096];
@@ -125,72 +123,70 @@ char junk3[4096];
 
 // test whether copyout() simulates COW faults.
 void
-filetest()
-{
-  int parent = getpid();
-  
-  printf("file: ");
-  
-  buf[0] = 99;
+filetest() {
+    int parent = getpid();
 
-  for(int i = 0; i < 4; i++){
-    if(pipe(fds) != 0){
-      printf("pipe() failed\n");
-      exit();
+    printf("file: ");
+
+    buf[0] = 99;
+
+    for(int i = 0; i < 4; i++) {
+        if(pipe(fds) != 0) {
+            printf("pipe() failed\n");
+            exit();
+        }
+        int pid = fork();
+        if(pid < 0) {
+            printf("fork failed\n");
+            exit();
+        }
+        if(pid == 0) {
+            sleep(1);
+            if(read(fds[0], buf, sizeof(i)) != sizeof(i)) {
+                printf("read failed\n");
+                kill(parent);
+                exit();
+            }
+            sleep(1);
+            int j = *(int*)buf;
+            if(j != i) {
+                printf("read the wrong value\n");
+                kill(parent);
+                exit();
+            }
+            exit();
+        }
+        if(write(fds[1], &i, sizeof(i)) != sizeof(i)) {
+            printf("write failed\n");
+            exit();
+        }
     }
-    int pid = fork();
-    if(pid < 0){
-      printf("fork failed\n");
-      exit();
-    }
-    if(pid == 0){
-      sleep(1);
-      if(read(fds[0], buf, sizeof(i)) != sizeof(i)){
-        printf("read failed\n");
-        kill(parent);
+
+    for(int i = 0; i < 4; i++)
+        wait();
+
+    if(buf[0] != 99) {
+        printf("child overwrote parent\n");
         exit();
-      }
-      sleep(1);
-      int j = *(int*)buf;
-      if(j != i){
-        printf("read the wrong value\n");
-        kill(parent);
-        exit();
-      }
-      exit();
     }
-    if(write(fds[1], &i, sizeof(i)) != sizeof(i)){
-      printf("write failed\n");
-      exit();
-    }
-  }
 
-  for(int i = 0; i < 4; i++)
-    wait();
-
-  if(buf[0] != 99){
-    printf("child overwrote parent\n");
-    exit();
-  }
-
-  printf("ok\n");
+    printf("ok\n");
 }
 
 int
-main(int argc, char *argv[])
-{
-  simpletest();
+main(int argc, char *argv[]) {
+    simpletest();
 
-  // check that the first simpletest() freed the physical memory.
-  simpletest();
+    // check that the first simpletest() freed the physical memory.
+    simpletest();
 
-  threetest();
-  threetest();
-  threetest();
+    threetest();
+    threetest();
+    threetest();
 
-  filetest();
+    filetest();
 
-  printf("ALL COW TESTS PASSED\n");
+    printf("ALL COW TESTS PASSED\n");
 
-  exit();
+    exit();
 }

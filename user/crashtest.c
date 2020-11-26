@@ -12,39 +12,37 @@
 void test0();
 
 int
-main(int argc, char *argv[])
-{
-  test0();
-  exit();
+main(int argc, char *argv[]) {
+    test0();
+    exit();
 }
 
-void test0()
-{
-  struct stat st;
-  
-  printf("test0 start\n");
+void test0() {
+    struct stat st;
 
-  mknod("disk1", DISK, 1);
+    printf("test0 start\n");
 
-  if (stat("/m/crashf", &st) == 0) {
-    printf("stat /m/crashf succeeded\n");
-    exit();
-  }
+    mknod("disk1", DISK, 1);
 
-  if (mount("/disk1", "/m") < 0) {
-    printf("mount failed\n");
-    exit();
-  }    
+    if (stat("/m/crashf", &st) == 0) {
+        printf("stat /m/crashf succeeded\n");
+        exit();
+    }
 
-  if (stat("/m/crashf", &st) < 0) {
-    printf("stat /m/crashf failed\n");
-    exit();
-  }
+    if (mount("/disk1", "/m") < 0) {
+        printf("mount failed\n");
+        exit();
+    }
 
-  if (minor(st.dev) != 1) {
-    printf("stat wrong minor %d\n", minor(st.dev));
-    exit();
-  }
-  
-  printf("test0 ok\n");
+    if (stat("/m/crashf", &st) < 0) {
+        printf("stat /m/crashf failed\n");
+        exit();
+    }
+
+    if (minor(st.dev) != 1) {
+        printf("stat wrong minor %d\n", minor(st.dev));
+        exit();
+    }
+
+    printf("test0 ok\n");
 }
