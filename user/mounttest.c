@@ -54,7 +54,7 @@ void test0() {
         printf("open read failed\n");
         exit();
     }
-    if (read(fd, buf, sizeof(buf)-1) != sizeof(buf)-1) {
+    if (read(fd, buf, sizeof(buf) - 1) != sizeof(buf) - 1) {
         printf("read failed\n");
         exit();
     }
@@ -63,7 +63,7 @@ void test0() {
     }
     close(fd);
 
-    if ((fd = open("/m/a", O_CREATE|O_WRONLY)) < 0) {
+    if ((fd = open("/m/a", O_CREATE | O_WRONLY)) < 0) {
         printf("open write failed\n");
         exit();
     }
@@ -241,7 +241,7 @@ void test2() {
         }
     }
     for (i = 0; i < NOP; i++) {
-        if ((fd = open("/m/b", O_CREATE|O_WRONLY)) < 0) {
+        if ((fd = open("/m/b", O_CREATE | O_WRONLY)) < 0) {
             printf("open write failed");
             exit();
         }
@@ -285,7 +285,7 @@ void test3() {
         }
         if (pid[i] == 0) {
             while(1) {
-                if ((fd = open("/m/b", O_CREATE|O_WRONLY)) < 0) {
+                if ((fd = open("/m/b", O_CREATE | O_WRONLY)) < 0) {
                     printf("open write failed");
                     exit();
                 }

@@ -17,7 +17,7 @@ int
 strcmp(const char *p, const char *q) {
     while(*p && *p == *q)
         p++, q++;
-    return (uchar)*p - (uchar)*q;
+    return (uchar) * p - (uchar) * q;
 }
 
 uint
@@ -52,7 +52,7 @@ gets(char *buf, int max) {
     int i, cc;
     char c;
 
-    for(i=0; i+1 < max; ) {
+    for(i = 0; i + 1 < max; ) {
         cc = read(0, &c, 1);
         if(cc < 1)
             break;
@@ -83,7 +83,7 @@ atoi(const char *s) {
 
     n = 0;
     while('0' <= *s && *s <= '9')
-        n = n*10 + *s++ - '0';
+        n = n * 10 + *s++ - '0';
     return n;
 }
 

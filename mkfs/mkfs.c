@@ -20,7 +20,7 @@
 // Disk layout:
 // [ boot block | sb block | log | inode blocks | free bit map | data blocks ]
 
-int nbitmap = FSSIZE/(BSIZE*8) + 1;
+int nbitmap = FSSIZE / (BSIZE * 8) + 1;
 int ninodeblocks = NINODES / IPB + 1;
 int nlog = LOGSIZE;
 int nmeta;    // Number of meta blocks (boot, sb, nlog, inode, bitmap)
@@ -81,7 +81,7 @@ main(int argc, char *argv[]) {
     assert((BSIZE % sizeof(struct dinode)) == 0);
     assert((BSIZE % sizeof(struct dirent)) == 0);
 
-    fsfd = open(argv[1], O_RDWR|O_CREAT|O_TRUNC, 0666);
+    fsfd = open(argv[1], O_RDWR | O_CREAT | O_TRUNC, 0666);
     if(fsfd < 0) {
         perror(argv[1]);
         exit(1);
@@ -97,8 +97,8 @@ main(int argc, char *argv[]) {
     sb.ninodes = xint(NINODES);
     sb.nlog = xint(nlog);
     sb.logstart = xint(2);
-    sb.inodestart = xint(2+nlog);
-    sb.bmapstart = xint(2+nlog+ninodeblocks);
+    sb.inodestart = xint(2 + nlog);
+    sb.bmapstart = xint(2 + nlog + ninodeblocks);
 
     printf("nmeta %d (boot, super, log blocks %u inode blocks %u, bitmap blocks %u) blocks %d total %d\n",
            nmeta, nlog, ninodeblocks, nbitmap, nblocks, FSSIZE);
@@ -163,7 +163,7 @@ main(int argc, char *argv[]) {
     // fix size of root inode dir
     rinode(rootino, &din);
     off = xint(din.size);
-    off = ((off/BSIZE) + 1) * BSIZE;
+    off = ((off / BSIZE) + 1) * BSIZE;
     din.size = xint(off);
     winode(rootino, &din);
 
@@ -240,10 +240,10 @@ balloc(int used) {
     int i;
 
     printf("balloc: first %d blocks have been allocated\n", used);
-    assert(used < BSIZE*8);
+    assert(used < BSIZE * 8);
     bzero(buf, BSIZE);
     for(i = 0; i < used; i++) {
-        buf[i/8] = buf[i/8] | (0x1 << (i%8));
+        buf[i / 8] = buf[i / 8] | (0x1 << (i % 8));
     }
     printf("balloc: write bitmap block at sector %d\n", sb.bmapstart);
     wsect(sb.bmapstart, buf);
@@ -280,7 +280,7 @@ iappend(uint inum, void *xp, int n) {
                 indirect[fbn - NDIRECT] = xint(freeblock++);
                 wsect(xint(din.addrs[NDIRECT]), (char*)indirect);
             }
-            x = xint(indirect[fbn-NDIRECT]);
+            x = xint(indirect[fbn - NDIRECT]);
         }
         n1 = min(n, (fbn + 1) * BSIZE - off);
         rsect(x, buf);

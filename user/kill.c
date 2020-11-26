@@ -10,7 +10,7 @@ main(int argc, char **argv) {
         fprintf(2, "usage: kill pid...\n");
         exit();
     }
-    for(i=1; i<argc; i++)
+    for(i = 1; i < argc; i++)
         kill(atoi(argv[i]));
     exit();
 }

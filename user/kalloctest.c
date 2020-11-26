@@ -34,7 +34,7 @@ void test0() {
                 if(a == (char*)0xffffffffffffffffL) {
                     break;
                 }
-                *(int *)(a+4) = 1;
+                *(int *)(a + 4) = 1;
                 a1 = sbrk(-4096);
                 if (a1 != a + 4096) {
                     printf("wrong sbrk\n");
@@ -78,7 +78,7 @@ void test1() {
                 if(a == (char*)0xffffffffffffffffL) {
                     break;
                 }
-                *(int *)(a+4) = 1;
+                *(int *)(a + 4) = 1;
                 if (write(fds[1], "x", 1) != 1) {
                     printf("write failed");
                     exit();
@@ -100,7 +100,7 @@ void test1() {
             }
         }
     }
-    int n = (PHYSTOP-KERNBASE)/PGSIZE;
+    int n = (PHYSTOP - KERNBASE) / PGSIZE;
     printf("total allocated number of pages: %d (out of %d)\n", tot, n);
     if(n - tot > 1000) {
         printf("test1 failed: cannot allocate enough memory\n");

@@ -22,7 +22,7 @@ void
 ramdiskrw(struct buf *b) {
     if(!holdingsleep(&b->lock))
         panic("ramdiskrw: buf not locked");
-    if((b->flags & (B_VALID|B_DIRTY)) == B_VALID)
+    if((b->flags & (B_VALID | B_DIRTY)) == B_VALID)
         panic("ramdiskrw: nothing to do");
 
     if(b->blockno >= FSSIZE)

@@ -25,7 +25,7 @@ argfd(int n, int *pfd, struct file **pf) {
 
     if(argint(n, &fd) < 0)
         return -1;
-    if(fd < 0 || fd >= NOFILE || (f=myproc()->ofile[fd]) == 0)
+    if(fd < 0 || fd >= NOFILE || (f = myproc()->ofile[fd]) == 0)
         return -1;
     if(pfd)
         *pfd = fd;
@@ -57,7 +57,7 @@ sys_dup(void) {
 
     if(argfd(0, 0, &f) < 0)
         return -1;
-    if((fd=fdalloc(f)) < 0)
+    if((fd = fdalloc(f)) < 0)
         return -1;
     filedup(f);
     return fd;
@@ -163,7 +163,7 @@ isdirempty(struct inode *dp) {
     int off;
     struct dirent de;
 
-    for(off=2*sizeof(de); off<dp->size; off+=sizeof(de)) {
+    for(off = 2 * sizeof(de); off < dp->size; off += sizeof(de)) {
         if(readi(dp, 0, (uint64)&de, off, sizeof(de)) != sizeof(de))
             panic("isdirempty: readi");
         if(de.inum != 0)
@@ -401,11 +401,11 @@ sys_exec(void) {
         return -1;
     }
     memset(argv, 0, sizeof(argv));
-    for(i=0;; i++) {
+    for(i = 0;; i++) {
         if(i >= NELEM(argv)) {
             return -1;
         }
-        if(fetchaddr(uargv+sizeof(uint64)*i, (uint64*)&uarg) < 0) {
+        if(fetchaddr(uargv + sizeof(uint64)*i, (uint64*)&uarg) < 0) {
             return -1;
         }
         if(uarg == 0) {
@@ -448,7 +448,7 @@ sys_pipe(void) {
         return -1;
     }
     if(copyout(p->pagetable, fdarray, (char*)&fd0, sizeof(fd0)) < 0 ||
-            copyout(p->pagetable, fdarray+sizeof(fd0), (char *)&fd1, sizeof(fd1)) < 0) {
+            copyout(p->pagetable, fdarray + sizeof(fd0), (char *)&fd1, sizeof(fd1)) < 0) {
         p->ofile[fd0] = 0;
         p->ofile[fd1] = 0;
         fileclose(rf);

@@ -18,7 +18,7 @@ forktest(void) {
 
     print("fork test\n");
 
-    for(n=0; n<N; n++) {
+    for(n = 0; n < N; n++) {
         pid = fork();
         if(pid < 0)
             break;

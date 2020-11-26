@@ -25,7 +25,7 @@ struct disk {
     // this is a global instead of allocated because it has
     // to be multiple contiguous pages, which kalloc()
     // doesn't support.
-    char pages[2*PGSIZE];
+    char pages[2 * PGSIZE];
 
     struct VRingDesc *desc;
     uint16 *avail;
@@ -113,7 +113,7 @@ virtio_disk_init(int n) {
     // used = pages + 4096 -- 2 * uint16, then num * vRingUsedElem
 
     disk[n].desc = (struct VRingDesc *) disk[n].pages;
-    disk[n].avail = (uint16*)(((char*)disk[n].desc) + NUM*sizeof(struct VRingDesc));
+    disk[n].avail = (uint16*)(((char*)disk[n].desc) + NUM * sizeof(struct VRingDesc));
     disk[n].used = (struct UsedArea *) (disk[n].pages + PGSIZE);
 
     for(int i = 0; i < NUM; i++)

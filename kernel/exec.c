@@ -13,7 +13,7 @@ int
 exec(char *path, char **argv) {
     char *s, *last;
     int i, off;
-    uint64 argc, sz, sp, ustack[MAXARG+1], stackbase;
+    uint64 argc, sz, sp, ustack[MAXARG + 1], stackbase;
     struct elfhdr elf;
     struct inode *ip;
     struct proghdr ph;
@@ -39,7 +39,7 @@ exec(char *path, char **argv) {
 
     // Load program into memory.
     sz = 0;
-    for(i=0, off=elf.phoff; i<elf.phnum; i++, off+=sizeof(ph)) {
+    for(i = 0, off = elf.phoff; i < elf.phnum; i++, off += sizeof(ph)) {
         if(readi(ip, 0, (uint64)&ph, off, sizeof(ph)) != sizeof(ph))
             goto bad;
         if(ph.type != ELF_PROG_LOAD)
@@ -65,9 +65,9 @@ exec(char *path, char **argv) {
     // Allocate two pages at the next page boundary.
     // Use the second as the user stack.
     sz = PGROUNDUP(sz);
-    if((sz = uvmalloc(pagetable, sz, sz + 2*PGSIZE)) == 0)
+    if((sz = uvmalloc(pagetable, sz, sz + 2 * PGSIZE)) == 0)
         goto bad;
-    uvmclear(pagetable, sz-2*PGSIZE);
+    uvmclear(pagetable, sz - 2 * PGSIZE);
     sp = sz;
     stackbase = sp - PGSIZE;
 
@@ -86,11 +86,11 @@ exec(char *path, char **argv) {
     ustack[argc] = 0;
 
     // push the array of argv[] pointers.
-    sp -= (argc+1) * sizeof(uint64);
+    sp -= (argc + 1) * sizeof(uint64);
     sp -= sp % 16;
     if(sp < stackbase)
         goto bad;
-    if(copyout(pagetable, sp, (char *)ustack, (argc+1)*sizeof(uint64)) < 0)
+    if(copyout(pagetable, sp, (char *)ustack, (argc + 1)*sizeof(uint64)) < 0)
         goto bad;
 
     // arguments to user main(argc, argv)
@@ -99,9 +99,9 @@ exec(char *path, char **argv) {
     p->tf->a1 = sp;
 
     // Save program name for debugging.
-    for(last=s=path; *s; s++)
+    for(last = s = path; *s; s++)
         if(*s == '/')
-            last = s+1;
+            last = s + 1;
     safestrcpy(p->name, last, sizeof(p->name));
 
     // Commit to the user image.
@@ -143,7 +143,7 @@ loadseg(pagetable_t pagetable, uint64 va, struct inode *ip, uint offset, uint sz
             n = sz - i;
         else
             n = PGSIZE;
-        if(readi(ip, 0, (uint64)pa, offset+i, n) != n)
+        if(readi(ip, 0, (uint64)pa, offset + i, n) != n)
             return -1;
     }
 

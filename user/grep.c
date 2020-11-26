@@ -13,7 +13,7 @@ grep(char *pattern, int fd) {
     char *p, *q;
 
     m = 0;
-    while((n = read(fd, buf+m, sizeof(buf)-m-1)) > 0) {
+    while((n = read(fd, buf + m, sizeof(buf) - m - 1)) > 0) {
         m += n;
         buf[m] = '\0';
         p = buf;
@@ -21,9 +21,9 @@ grep(char *pattern, int fd) {
             *q = 0;
             if(match(pattern, p)) {
                 *q = '\n';
-                write(1, p, q+1 - p);
+                write(1, p, q + 1 - p);
             }
-            p = q+1;
+            p = q + 1;
         }
         if(m > 0) {
             m -= p - buf;
@@ -68,7 +68,7 @@ int matchstar(int, char*, char*);
 int
 match(char *re, char *text) {
     if(re[0] == '^')
-        return matchhere(re+1, text);
+        return matchhere(re + 1, text);
     do { // must look at empty string
         if(matchhere(re, text))
             return 1;
@@ -81,11 +81,11 @@ int matchhere(char *re, char *text) {
     if(re[0] == '\0')
         return 1;
     if(re[1] == '*')
-        return matchstar(re[0], re+2, text);
+        return matchstar(re[0], re + 2, text);
     if(re[0] == '$' && re[1] == '\0')
         return *text == '\0';
-    if(*text!='\0' && (re[0]=='.' || re[0]==*text))
-        return matchhere(re+1, text+1);
+    if(*text != '\0' && (re[0] == '.' || re[0] == *text))
+        return matchhere(re + 1, text + 1);
     return 0;
 }
 
@@ -94,7 +94,7 @@ int matchstar(int c, char *re, char *text) {
     do { // a * matches zero or more instances
         if(matchhere(re, text))
             return 1;
-    } while(*text!='\0' && (*text++==c || c=='.'));
+    } while(*text != '\0' && (*text++ == c || c == '.'));
     return 0;
 }
 

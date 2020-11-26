@@ -41,10 +41,10 @@ kvminit() {
     kvmmap(PLIC, PLIC, 0x400000, PTE_R | PTE_W);
 
     // map kernel text executable and read-only.
-    kvmmap(KERNBASE, KERNBASE, (uint64)etext-KERNBASE, PTE_R | PTE_X);
+    kvmmap(KERNBASE, KERNBASE, (uint64)etext - KERNBASE, PTE_R | PTE_X);
 
     // map kernel data and the physical RAM we'll make use of.
-    kvmmap((uint64)etext, (uint64)etext, PHYSTOP-(uint64)etext, PTE_R | PTE_W);
+    kvmmap((uint64)etext, (uint64)etext, PHYSTOP - (uint64)etext, PTE_R | PTE_W);
 
     // map the trampoline for trap entry/exit to
     // the highest virtual address in the kernel.
@@ -134,7 +134,7 @@ kvmpa(uint64 va) {
     if((*pte & PTE_V) == 0)
         panic("kvmpa");
     pa = PTE2PA(*pte);
-    return pa+off;
+    return pa + off;
 }
 
 // Create PTEs for virtual addresses starting at va that refer to
@@ -216,7 +216,7 @@ uvminit(pagetable_t pagetable, uchar *src, uint sz) {
         panic("inituvm: more than a page");
     mem = kalloc();
     memset(mem, 0, PGSIZE);
-    mappages(pagetable, 0, PGSIZE, (uint64)mem, PTE_W|PTE_R|PTE_X|PTE_U);
+    mappages(pagetable, 0, PGSIZE, (uint64)mem, PTE_W | PTE_R | PTE_X | PTE_U);
     memmove(mem, src, sz);
 }
 
@@ -239,7 +239,7 @@ uvmalloc(pagetable_t pagetable, uint64 oldsz, uint64 newsz) {
             return 0;
         }
         memset(mem, 0, PGSIZE);
-        if(mappages(pagetable, a, PGSIZE, (uint64)mem, PTE_W|PTE_X|PTE_R|PTE_U) != 0) {
+        if(mappages(pagetable, a, PGSIZE, (uint64)mem, PTE_W | PTE_X | PTE_R | PTE_U) != 0) {
             kfree(mem);
             uvmdealloc(pagetable, a, oldsz);
             return 0;
@@ -267,7 +267,7 @@ freewalk(pagetable_t pagetable) {
     // there are 2^9 = 512 PTEs in a page table.
     for(int i = 0; i < 512; i++) {
         pte_t pte = pagetable[i];
-        if((pte & PTE_V) && (pte & (PTE_R|PTE_W|PTE_X)) == 0) {
+        if((pte & PTE_V) && (pte & (PTE_R | PTE_W | PTE_X)) == 0) {
             // this PTE points to a lower-level page table.
             uint64 child = PTE2PA(pte);
             freewalk((pagetable_t)child);

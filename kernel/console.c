@@ -68,7 +68,7 @@ consolewrite(int user_src, uint64 src, int n) {
     acquire(&cons.lock);
     for(i = 0; i < n; i++) {
         char c;
-        if(either_copyin(&c, user_src, src+i, 1) == -1)
+        if(either_copyin(&c, user_src, src + i, 1) == -1)
             break;
         consputc(c);
     }
@@ -170,7 +170,7 @@ consoleintr(int c) {
             // store for consumption by consoleread().
             cons.buf[cons.e++ % INPUT_BUF] = c;
 
-            if(c == '\n' || c == C('D') || cons.e == cons.r+INPUT_BUF) {
+            if(c == '\n' || c == C('D') || cons.e == cons.r + INPUT_BUF) {
                 // wake up consoleread() if a whole line (or end-of-file)
                 // has arrived.
                 cons.w = cons.e;

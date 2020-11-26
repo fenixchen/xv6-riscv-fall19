@@ -69,7 +69,7 @@ install_trans(int dev) {
     int tail;
 
     for (tail = 0; tail < log[dev].lh.n; tail++) {
-        struct buf *lbuf = bread(dev, log[dev].start+tail+1); // read log block
+        struct buf *lbuf = bread(dev, log[dev].start + tail + 1); // read log block
         struct buf *dbuf = bread(dev, log[dev].lh.block[tail]); // read dst
         memmove(dbuf->data, lbuf->data, BSIZE);  // copy block to dst
         bwrite(dbuf);  // write dst to disk
@@ -123,7 +123,7 @@ begin_op(int dev) {
     while(1) {
         if(log[dev].committing) {
             sleep(&log, &log[dev].lock);
-        } else if(log[dev].lh.n + (log[dev].outstanding+1)*MAXOPBLOCKS > LOGSIZE) {
+        } else if(log[dev].lh.n + (log[dev].outstanding + 1)*MAXOPBLOCKS > LOGSIZE) {
             // this op might exhaust log space; wait for commit.
             sleep(&log, &log[dev].lock);
         } else {
@@ -172,7 +172,7 @@ write_log(int dev) {
     int tail;
 
     for (tail = 0; tail < log[dev].lh.n; tail++) {
-        struct buf *to = bread(dev, log[dev].start+tail+1); // log block
+        struct buf *to = bread(dev, log[dev].start + tail + 1); // log block
         struct buf *from = bread(dev, log[dev].lh.block[tail]); // cache block
         memmove(to->data, from->data, BSIZE);
         bwrite(to);  // write the log

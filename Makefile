@@ -143,6 +143,8 @@ UPROGS=\
 	$U/_sleep\
 	$U/_pingpong\
 	$U/_primes\
+	$U/_find\
+	$U/_xargs\
 
 fs.img: mkfs/mkfs README user/xargstest.sh $(UPROGS)
 	mkfs/mkfs fs.img README user/xargstest.sh $(UPROGS)
@@ -157,9 +159,9 @@ clean:
         $U/usys.S \
 	$(UPROGS)
 
-astyle:
-	astyle --style=google *.h -R -n
-	astyle --style=google *.c -R -n
+format:
+	astyle --style=google *.h -R -n -p
+	astyle --style=google *.c -R -n -p
 
 # try to generate a unique GDB port
 GDBPORT = $(shell expr `id -u` % 5000 + 25000)

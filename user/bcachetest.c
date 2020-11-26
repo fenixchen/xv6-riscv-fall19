@@ -111,7 +111,7 @@ void test1() {
             exit();
         }
         if(pid == 0) {
-            if (i==0) {
+            if (i == 0) {
                 for (i = 0; i < N; i++) {
                     readfile(file, BIG);
                 }

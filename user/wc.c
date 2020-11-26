@@ -12,7 +12,7 @@ wc(int fd, char *name) {
     l = w = c = 0;
     inword = 0;
     while((n = read(fd, buf, sizeof(buf))) > 0) {
-        for(i=0; i<n; i++) {
+        for(i = 0; i < n; i++) {
             c++;
             if(buf[i] == '\n')
                 l++;

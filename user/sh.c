@@ -156,9 +156,9 @@ main(void) {
     while(getcmd(buf, sizeof(buf)) >= 0) {
         if(buf[0] == 'c' && buf[1] == 'd' && buf[2] == ' ') {
             // Chdir must be called by the parent, not the child.
-            buf[strlen(buf)-1] = 0;  // chop \n
-            if(chdir(buf+3) < 0)
-                fprintf(2, "cannot cd %s\n", buf+3);
+            buf[strlen(buf) - 1] = 0; // chop \n
+            if(chdir(buf + 3) < 0)
+                fprintf(2, "cannot cd %s\n", buf + 3);
             continue;
         }
         if(fork1() == 0)
@@ -370,10 +370,10 @@ parseredirs(struct cmd *cmd, char **ps, char *es) {
             cmd = redircmd(cmd, q, eq, O_RDONLY, 0);
             break;
         case '>':
-            cmd = redircmd(cmd, q, eq, O_WRONLY|O_CREATE, 1);
+            cmd = redircmd(cmd, q, eq, O_WRONLY | O_CREATE, 1);
             break;
         case '+':  // >>
-            cmd = redircmd(cmd, q, eq, O_WRONLY|O_CREATE, 1);
+            cmd = redircmd(cmd, q, eq, O_WRONLY | O_CREATE, 1);
             break;
         }
     }
@@ -411,7 +411,7 @@ parseexec(char **ps, char *es) {
     argc = 0;
     ret = parseredirs(ret, ps, es);
     while(!peek(ps, es, "|)&;")) {
-        if((tok=gettoken(ps, es, &q, &eq)) == 0)
+        if((tok = gettoken(ps, es, &q, &eq)) == 0)
             break;
         if(tok != 'a')
             panic("syntax");
@@ -443,7 +443,7 @@ nulterminate(struct cmd *cmd) {
     switch(cmd->type) {
     case EXEC:
         ecmd = (struct execcmd*)cmd;
-        for(i=0; ecmd->argv[i]; i++)
+        for(i = 0; ecmd->argv[i]; i++)
             *ecmd->eargv[i] = 0;
         break;
 
