@@ -68,7 +68,7 @@ void            initlog(int, struct superblock*);
 void            log_write(struct buf*);
 void            begin_op(int);
 void            end_op(int);
-void            crash_op(int,int);
+void            crash_op(int, int);
 
 // pipe.c
 int             pipealloc(struct file**, struct file**);
@@ -191,13 +191,13 @@ void            virtio_disk_intr(int);
 
 
 // buddy.c
-void           bd_init(void*,void*);
+void           bd_init(void*, void*);
 void           bd_free(void*);
 void           *bd_malloc(uint64);
 
 struct list {
-  struct list *next;
-  struct list *prev;
+    struct list *next;
+    struct list *prev;
 };
 
 // list.c

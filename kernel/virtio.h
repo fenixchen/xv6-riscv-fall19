@@ -48,17 +48,17 @@
 #define NUM 8
 
 struct VRingDesc {
-  uint64 addr;
-  uint32 len;
-  uint16 flags;
-  uint16 next;
+    uint64 addr;
+    uint32 len;
+    uint16 flags;
+    uint16 next;
 };
 #define VRING_DESC_F_NEXT  1 // chained with another descriptor
 #define VRING_DESC_F_WRITE 2 // device writes (vs read)
 
 struct VRingUsedElem {
-  uint32 id;   // index of start of completed descriptor chain
-  uint32 len;
+    uint32 id;   // index of start of completed descriptor chain
+    uint32 len;
 };
 
 // for disk ops
@@ -66,7 +66,7 @@ struct VRingUsedElem {
 #define VIRTIO_BLK_T_OUT 1 // write the disk
 
 struct UsedArea {
-  uint16 flags;
-  uint16 id;
-  struct VRingUsedElem elems[NUM];
+    uint16 flags;
+    uint16 id;
+    struct VRingUsedElem elems[NUM];
 };

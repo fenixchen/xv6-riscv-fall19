@@ -158,6 +158,9 @@ clean:
         $U/usys.S \
 	$(UPROGS)
 
+format:
+	astyle --style=google *.h -R -n -p -e -j
+	astyle --style=google *.c -R -n -p -e -j
 # try to generate a unique GDB port
 GDBPORT = $(shell expr `id -u` % 5000 + 25000)
 # QEMU's gdb stub command line changed in 0.11
