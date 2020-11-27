@@ -28,10 +28,8 @@ main(int argc, char *argv[]) {
     char *max_argv[MAXARG];
     for(int i = 1; i < argc; i++) {
         max_argv[i - 1] = argv[i];
-    }
-    printf("gets...\n");
-    while(my_gets(buf, sizeof(buf))) {
-        printf("gets %s\n", buf);
+    }    
+    while(my_gets(buf, sizeof(buf))) {        
         int buf_len = strlen(buf);
         if(buf_len < 1) break;
         buf[buf_len - 1] = 0;
